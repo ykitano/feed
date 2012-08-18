@@ -8,6 +8,12 @@ import org.seasar.struts.annotation.Required;
 
 import com.feed.common.FeedCommon;
 
+/**
+ * 登録フォームクラスです。
+ * 
+ * @author Yoshi
+ *
+ */
 public class RegisterForm {
 
     protected FeedCommon feedCommon = FeedCommon.getInstance();

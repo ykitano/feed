@@ -4,6 +4,12 @@ import org.seasar.extension.jdbc.AutoSelect;
 
 import com.feed.entity.Member;
 
+/**
+ * 会員サービスクラスです。
+ * 
+ * @author Yoshi
+ *
+ */
 public class MemberService extends AbstractService<Member> {
 
 	public long getCount(String loginId) {

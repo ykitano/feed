@@ -7,6 +7,12 @@ import org.seasar.struts.annotation.Execute;
 
 import com.feed.form.LoginForm;
 
+/**
+ * ログインアクションクラスです。
+ * 
+ * @author Yoshi
+ * 
+ */
 public class LoginAction {
 
     @ActionForm
@@ -20,6 +26,7 @@ public class LoginAction {
 
     @Execute(validator = true, input = "index.jsp")
     public String login() {
+	// 会員トップページへ遷移
 	return "/home?redirect=true";
     }
 

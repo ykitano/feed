@@ -25,7 +25,7 @@ import com.feed.service.PrefectureMService;
  * 会員登録アクションクラスです。
  * 
  * @author Yoshi
- *
+ * 
  */
 public class RegisterAction extends AbstractAction {
 
@@ -48,8 +48,11 @@ public class RegisterAction extends AbstractAction {
     @Execute(validator = false)
     public String index() {
 
+	// フォームを初期化
 	registerForm.initialize();
+	// 住所一覧を取得
 	registerDto.addressItems = prefectureMService.findAll();
+	// 職業一覧を取得
 	registerDto.jobItems = jobMService.findAll();
 
 	return "index.jsp";
@@ -58,14 +61,19 @@ public class RegisterAction extends AbstractAction {
     @Execute(validator = true, validate = "registeredValidate, passwordValidate, birthdayValidate", input = "index.jsp")
     public String confirm() {
 
+	// フォームをDTOにコピー
 	Beans.copy(registerForm, registerDto).excludes("birthday").execute();
 
+	// 性別表示用文字列の取得
 	registerForm.strGender = registerDto.getStrGender();
 
+	// 都道府県表示用文字列の取得
 	registerForm.prefecture = registerDto.getPrefecture();
 
+	// 職業表示用文字列の取得
 	registerForm.job = registerDto.getJob();
 
+	// トークンの取得
 	TokenProcessor.getInstance().saveToken(request);
 
 	return "confirm.jsp";
@@ -74,8 +82,10 @@ public class RegisterAction extends AbstractAction {
     @Execute(validator = false)
     public String reinput() {
 
+	// DTOをフォームにコピー
 	Beans.copy(registerDto, registerForm).execute();
 
+	// トークンを取得
 	TokenProcessor.getInstance().saveToken(request);
 
 	return "index.jsp";
@@ -84,21 +94,27 @@ public class RegisterAction extends AbstractAction {
     @Execute(validator = false, validate = "tokenValidate", input = "/error/token.jsp")
     public String register() {
 
+	// 会員情報エンティティをDTOから作成
 	Member member = Beans.createAndCopy(Member.class, registerDto)
 		.execute();
 
+	// 会員ステータスを一般(0)に設定
 	member.status = 0;
 
+	// 現在日時の取得
 	Timestamp now = new Timestamp(System.currentTimeMillis());
 
 	member.insertDate = now;
 
 	member.updateDate = now;
 
+	// 会員情報テーブルに登録
 	memberService.insert(member);
 
+	// 会員IDの取得
 	member.memberId = memberService.getMemberId(member.loginId);
 
+	// DTOに会員情報を保存
 	memberDto.setData(member);
 
 	return "finish.jsp";
@@ -108,6 +124,7 @@ public class RegisterAction extends AbstractAction {
 
 	ActionMessages errors = new ActionMessages();
 
+	// 会員情報テーブルにログインIDが登録されていた場合
 	if (memberService.getCount(registerForm.loginId) != 0) {
 	    errors.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(
 		    "errors.registered", null));
@@ -121,6 +138,7 @@ public class RegisterAction extends AbstractAction {
 	FeedCommon feedCommon = FeedCommon.getInstance();
 	ActionMessages errors = new ActionMessages();
 
+	// パスワードとパスワード（確認）が一致しない場合
 	if (!registerForm.password.equals(registerForm.passwordConfirm)) {
 	    errors.add(ActionMessages.GLOBAL_MESSAGE,
 		    new ActionMessage("errors.nomatch", new String[] {
@@ -136,9 +154,10 @@ public class RegisterAction extends AbstractAction {
     public ActionMessages birthdayValidate() {
 
 	ActionMessages errors = new ActionMessages();
-	
+
+	// プロパティファイルの取得
 	FeedCommon feedCommon = FeedCommon.getInstance();
-	
+
 	if (!registerForm.isBirthdayNoInput()) {
 
 	    SimpleDateFormat sdf = new SimpleDateFormat(

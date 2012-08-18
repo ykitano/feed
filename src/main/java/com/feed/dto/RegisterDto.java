@@ -11,6 +11,12 @@ import com.feed.common.FeedCommon;
 import com.feed.entity.JobM;
 import com.feed.entity.PrefectureM;
 
+/**
+ * 登録用セッションDTOクラスです。
+ * 
+ * @author Yoshi
+ *
+ */
 @Component(instance = InstanceType.SESSION)
 public class RegisterDto implements Serializable {
 
